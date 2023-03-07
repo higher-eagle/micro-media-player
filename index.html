@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+<head>
+  <meta charSet="utf-8">
+  <title>web component demo</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
+  <link rel="shortcut icon" href="https://raw.githubusercontent.com/higher-eagle/micro-media-player/master/micro-media-player/favicon.ico">
+
+  <!--安裝web component-->
+  <script src="https://cdn.jsdelivr.net/gh/higher-eagle/micro-media-player@v1.0.0/micro-media-player.umd.js"></script>
+
+  <!--  videojs css-->
+  <link href="https://unpkg.com/video.js@7.11.4/dist/video-js.css" rel="stylesheet" />
+
+  <!--  如果需要使用youtube類型影片, 需要載入youtube iframe api-->
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <style>
+    button {
+      margin-right: 30px
+    }
+  </style>
+</head>
+<body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+<script>
+  let hasSizeToggled = false
+  const setM3u8 = (autoplay = false) => {
+    window.$microMediaPlayer.setupSource({
+      type: 'm3u8',
+      autoplay,
+      url: 'https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8',
+    })
+  }
+
+  const setYoutube = (autoplay = false) => {
+    window.$microMediaPlayer.setupSource({
+      type: 'youtube',
+      autoplay,
+      url: 'https://www.youtube.com/watch?v=4TundgWpJA4',
+    })
+  }
+
+  const setMp4 = () => {
+    window.$microMediaPlayer.setupSource({
+      type: 'static-video',
+      url: 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_1MB.mp4',
+    })
+  }
+
+  $(() => {
+    const element = document.querySelector('#micro-media-component')
+    // 取web component vue instance
+    window.$microMediaPlayer = element._instance.exposed
+    window.$microMediaPlayer.init({
+      width: 400,
+      height: 300,
+      logo: 'https://raw.githubusercontent.com/higher-eagle/micro-media-player/master/micro-media-player/logo.png',
+      eventOnFirstPlay: () => console.warn(`[DEMO] eventOnFirstPlay`),
+      eventOnPlay: () => console.warn(`[DEMO] eventOnPlay`),
+      eventOnPause: () => console.warn(`[DEMO] eventOnPause`),
+      eventOnEnd: () => console.warn(`[DEMO] eventOnEnd`),
+    })
+
+    setM3u8()
+    $('#setM3u8').click(() => setM3u8())
+    $('#setM3u8Autoplay').click(() => setM3u8(true))
+    $('#setYoutube').click(() => setYoutube())
+    $('#setYoutubeAutoplay').click(() => setYoutube(true))
+    $('#setMp4').click(() => setMp4())
+    $('#clearSource').click(() => {
+      window.$microMediaPlayer.clearSource()
+    })
+    $('#setSize').click(() => {
+      if(!hasSizeToggled) {
+        window.$microMediaPlayer.setSize({width: 640, height: 480 })
+      }
+
+      else {
+        window.$microMediaPlayer.setSize({width: 400, height: 300 })
+      }
+      hasSizeToggled = !hasSizeToggled
+    })
+
+    let disabled = false
+    $('#toggleDisabled').click(() => {
+      disabled = !disabled
+      if(!disabled) {
+        $('#toggleDisabled').text('Disabled')
+      } else {
+        $('#toggleDisabled').text('Enabled')
+      }
+      $('#micro-media-component').attr('disabled', disabled)
+    })
+  })
+</script>
+<div class="container mt-4">
+  <div style="margin-bottom: 30px">
+    <button class="btn btn-primary" id="setM3u8">Set M3u8</button>
+    <button class="btn btn-primary" id="setM3u8Autoplay">Set M3u8(autoplay)</button>
+    <button class="btn btn-primary" id="setMp4">Set MP4</button>
+    <button class="btn btn-primary" id="setYoutube">Set Youtube</button>
+    <button class="btn btn-primary" id="setYoutubeAutoplay">Set Youtube(autoplay)</button>
+    <button class="btn btn-primary" id="setSize">Set Size</button>
+    <button class="btn btn-primary" id="toggleDisabled">Disabled</button>
+    <button class="btn btn-primary" id="clearSource">clearSource</button>
+  </div>
+  <div>
+
+    <!--載入web component-->
+    <micro-media-player id="micro-media-component" debug></micro-media-player>
+
+  </div>
+</div>
+</body>
+</html>

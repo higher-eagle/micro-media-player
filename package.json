@@ -1,0 +1,8 @@
+{
+  "name": "micro-media-player",
+  "version": "1.0.0",
+  "description": "video player web component",
+  "main": "micro-media-player.umd.js",
+  "author": "Higher Eagle <highereagle886@gmail.com>",
+  "license": "MIT"
+}
